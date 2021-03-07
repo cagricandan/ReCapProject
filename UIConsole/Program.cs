@@ -20,6 +20,15 @@ namespace UIConsole
             //RentalCar();
 
 
+            //GuıdGenerator();
+
+        }
+
+        private static void GuıdGenerator()
+        {
+            //guıd
+            Guid g = Guid.NewGuid();
+            Console.WriteLine(g);
         }
 
         private static void RentalCar()
@@ -36,7 +45,7 @@ namespace UIConsole
                 Email = "test@mail.com",
                 FirstName = "çağrı",
                 LastName = "candan",
-                Password = "123456"
+
             };
 
             Rental rental = new Rental
