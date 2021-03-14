@@ -32,9 +32,14 @@ namespace Business.Concrate
             return new SuccessDataResult<List<User>>(_userDal.GetAll());
         }
 
+        //public User GetByMail(string email)
+        //{
+        //    return _userDal.Get(u => u.Email == email);
+        //}
+
         public IDataResult<User> GetByMail(string email)
         {
-            return new SuccessDataResult<User>(_userDal.Get(u => u.Email == email));
+            return new DataResult<User>(_userDal.Get(u => u.Email == email), false);
         }
 
         public IDataResult<List<OperationClaim>> GetClaims(User user)
