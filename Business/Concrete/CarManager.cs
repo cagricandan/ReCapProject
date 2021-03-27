@@ -2,6 +2,9 @@
 using Business.BusinessAspect.Autofac;
 using Business.Constans;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspect.Autofac.Caching;
+using Core.Aspect.Autofac.Performance;
+using Core.Aspect.Autofac.Transaction;
 using Core.Aspect.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
@@ -27,8 +30,11 @@ namespace Business.Concrate
             _carDal = carDal;
         }
 
-        [SecuredOperation("car.add,admin")]
-        [ValidationAspect(typeof(CarValidator))]
+        [TransactionScopeAspect] //bi hata olursa bütün işlemi geri alma
+        [SecuredOperation("car.add,admin")] //yetkilerine veya yetkisisne sahip mi
+        [ValidationAspect(typeof(CarValidator))] //doğrulama
+        [CacheRemoveAspect("ICarServices.Get")] // bellekteki carservices içindeki get içeren tüm datayı yok et
+        [PerformanceAspect(20)]  // 20 saniyeyi geçerse çalışma süresi uyar
         public IResult Add(Car car)
         {
 
@@ -44,11 +50,13 @@ namespace Business.Concrate
             return new SuccessResult();
         }
 
+        [CacheAspect] //veriyi belleğe kaydet
         public IDataResult<List<Car>> GetAll()
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll());
         }
 
+        [CacheAspect]
         public IDataResult<Car> GetById(int carId)
         {
             return new SuccessDataResult<Car>(_carDal.Get(c => c.Id == carId));
